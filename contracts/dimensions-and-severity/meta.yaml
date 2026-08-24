@@ -1,0 +1,10 @@
+title: Dimensions and Severity
+summary: >-
+  Quality rules tagged with data-quality dimensions (completeness / accuracy).
+  The failing completeness check is severity: warning, so the overall run
+  downgrades to warning instead of failed. Also demonstrates tags on rules.
+tags: [quality, dimensions, severity, tags]
+difficulty: intermediate
+expected: warning
+data_format: parquet
+order: 4

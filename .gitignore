@@ -1,0 +1,88 @@
+# Operating systems
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.pyright/
+.ruff_cache/
+.hypothesis/
+.tox/
+.nox/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Builds and packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Tests and coverage
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Local environment variables and secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+service-account*.json
+*-credentials.json
+*.tfstate
+*.tfstate.*
+.aws/
+.gcp/
+
+# Streamlit local credentials (deployment secrets live in the Cloud dashboard)
+.streamlit/secrets.toml
+.streamlit/credentials.toml
+
+# Sanitised catalog pages, regenerated from catalog/ on app start
+static/catalog/
+
+# Editors and notebooks
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.ipynb_checkpoints/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+.cache/
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# Volatile fixture, regenerated on every app start (playground/fixtures.py)
+contracts/sla-freshness/data/events.parquet

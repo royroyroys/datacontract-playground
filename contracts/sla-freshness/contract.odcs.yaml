@@ -1,0 +1,52 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: sla-freshness
+name: SLA Freshness
+version: 1.0.0
+status: active
+description:
+  purpose: Freshness SLA on an events table, checked against the updated_at
+    timestamp column. Fixtures are generated about 1h before generation time,
+    so a 24h freshness SLA passes.
+  usage: Learn how slaProperties are tested. To make it fail, lower the
+    freshness value (e.g. from 24 to 1 hour) in the Editor and re-run Test.
+  limitations: Timestamps are relative to fixture generation time.
+tags:
+  - sla
+  - freshness
+schema:
+  - name: events
+    physicalName: events
+    physicalType: parquet
+    description: One row per application event.
+    quality:
+      - type: library
+        metric: rowCount
+        mustBeGreaterThan: 0
+        unit: rows
+        name: Events table is populated
+    properties:
+      - name: event_id
+        logicalType: string
+        physicalType: VARCHAR
+        required: true
+        unique: true
+      - name: event_type
+        logicalType: string
+        physicalType: VARCHAR
+      - name: updated_at
+        logicalType: timestamp
+        physicalType: TIMESTAMP
+        required: true
+        description: Last update time of the event; drives the freshness SLA.
+slaProperties:
+  - property: freshness
+    value: 24
+    unit: h
+    element: events.updated_at
+    description: Newest event must be at most 24 hours old.
+servers:
+  - server: local
+    type: local
+    path: data/events.parquet
+    format: parquet

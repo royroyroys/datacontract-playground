@@ -1,0 +1,9 @@
+title: Multi-Table Contract
+summary: >-
+  Two schema objects (orders + line_items) served from one local server with
+  two parquet files. Great for trying the mermaid / html / sql exports.
+tags: [multi-table, export]
+difficulty: intermediate
+expected: passed
+data_format: parquet
+order: 6

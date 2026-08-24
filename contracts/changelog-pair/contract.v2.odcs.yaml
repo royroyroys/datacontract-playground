@@ -1,0 +1,77 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: orders-contract
+name: Orders Contract
+version: 2.0.0
+status: active
+description:
+  purpose: Version 2 of the orders contract. Changes vs v1 - renamed
+    customer_email to email, widened total_amount from integer to number,
+    removed the duplicateCount quality rule, added the customers table.
+  usage: Compare with contract.v1.odcs.yaml on the Changelog page.
+  limitations: Local fixture data only.
+tags:
+  - orders
+  - changelog
+schema:
+  - name: orders
+    physicalName: orders
+    physicalType: parquet
+    description: One row per customer order.
+    quality:
+      - type: library
+        metric: rowCount
+        mustBeGreaterThan: 0
+        unit: rows
+        name: Orders table is populated
+    properties:
+      - name: order_id
+        logicalType: string
+        physicalType: VARCHAR
+        required: true
+        unique: true
+      - name: customer_name
+        logicalType: string
+        physicalType: VARCHAR
+      - name: email
+        logicalType: string
+        physicalType: VARCHAR
+        format: email
+        description: Contact email of the customer (renamed from customer_email).
+      - name: country
+        logicalType: string
+        physicalType: VARCHAR
+      - name: total_amount
+        logicalType: number
+        physicalType: BIGINT
+        description: Total order amount (fractional amounts allowed since v2).
+      - name: status
+        logicalType: string
+        physicalType: VARCHAR
+      - name: order_date
+        logicalType: date
+        physicalType: DATE
+  - name: customers
+    physicalName: customers
+    physicalType: parquet
+    description: One row per customer (added in v2).
+    properties:
+      - name: customer_id
+        logicalType: string
+        physicalType: VARCHAR
+        required: true
+        unique: true
+      - name: name
+        logicalType: string
+        physicalType: VARCHAR
+      - name: email
+        logicalType: string
+        physicalType: VARCHAR
+        format: email
+servers:
+  - server: local
+    type: local
+    # {model} resolves orders -> data/orders.parquet,
+    # customers -> data/customers.parquet (added in v2)
+    path: data/{model}.parquet
+    format: parquet

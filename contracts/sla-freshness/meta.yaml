@@ -1,0 +1,15 @@
+title: SLA Freshness
+summary: >-
+  slaProperties freshness SLA on the events table, checked against the
+  updated_at timestamp column. Fixtures are generated ~1h before generation
+  time so a 24h freshness SLA passes.
+tags: [sla, freshness]
+difficulty: intermediate
+expected: passed
+data_format: parquet
+order: 5
+notes: >-
+  To make it fail, toggle Edit on Explore and edit slaProperties: lower the
+  freshness value (e.g. from 24 to 1 with unit h) and re-run Test - the newest
+  updated_at is about 1 hour old. Timestamps reset on every app start
+  (the fixture is volatile).

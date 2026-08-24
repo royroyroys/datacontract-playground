@@ -1,0 +1,63 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: sql-custom-checks
+name: SQL Custom Checks
+version: 1.0.0
+status: active
+description:
+  purpose: Custom SQL quality rules using the ${object} and ${property}
+    placeholders, executed against a local CSV fixture.
+  usage: Learn how to express business rules that library rules cannot cover.
+  limitations: SQL rules must be read-only SELECT queries returning one value.
+tags:
+  - quality
+  - sql
+schema:
+  - name: customers
+    physicalName: customers
+    physicalType: csv
+    description: One row per customer.
+    quality:
+      - type: sql
+        query: SELECT COUNT(*) FROM ${object} WHERE email NOT LIKE '%@%'
+        mustBe: 0
+        name: All emails contain an at-sign
+        description: Row count of malformed emails must be zero.
+    properties:
+      - name: customer_id
+        logicalType: string
+        physicalType: VARCHAR
+        required: true
+        unique: true
+      - name: name
+        logicalType: string
+        physicalType: VARCHAR
+      - name: email
+        logicalType: string
+        physicalType: VARCHAR
+        format: email
+      - name: country
+        logicalType: string
+        physicalType: VARCHAR
+      - name: total_amount
+        logicalType: number
+        physicalType: DOUBLE
+        description: Lifetime order value of the customer.
+        quality:
+          - type: sql
+            query: SELECT COUNT(*) FROM ${object} WHERE ${property} < 0
+            mustBe: 0
+            name: total_amount is never negative
+          - type: sql
+            query: SELECT COUNT(*) FROM ${object} WHERE ${property} > 100000
+            mustBe: 0
+            name: total_amount stays below 100k
+      - name: created_at
+        logicalType: timestamp
+        physicalType: TIMESTAMP
+        description: When the customer record was created.
+servers:
+  - server: local
+    type: local
+    path: data/customers.csv
+    format: csv

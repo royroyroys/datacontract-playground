@@ -1,0 +1,11 @@
+title: Changelog Pair (v1 vs v2)
+summary: >-
+  Two versions of the same contract: a renamed field, a type change, a removed
+  quality rule and an added table. The Changelog section on Explore shows the
+  entries. The v2 contract is the runnable one (tests passed).
+tags: [changelog, evolution]
+difficulty: intermediate
+expected: passed
+data_format: parquet
+order: 7
+changelog: true

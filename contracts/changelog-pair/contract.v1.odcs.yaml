@@ -1,0 +1,62 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: orders-contract
+name: Orders Contract
+version: 1.0.0
+status: active
+description:
+  purpose: Version 1 of the orders contract (changelog baseline).
+  usage: Compare with contract.v2.odcs.yaml on the Changelog page.
+  limitations: Local fixture data only.
+tags:
+  - orders
+  - changelog
+schema:
+  - name: orders
+    physicalName: orders
+    physicalType: parquet
+    description: One row per customer order.
+    quality:
+      - type: library
+        metric: rowCount
+        mustBeGreaterThan: 0
+        unit: rows
+        name: Orders table is populated
+    properties:
+      - name: order_id
+        logicalType: string
+        physicalType: VARCHAR
+        required: true
+        unique: true
+        quality:
+          - type: library
+            metric: duplicateValues
+            mustBe: 0
+            unit: rows
+            name: No duplicate order ids
+      - name: customer_name
+        logicalType: string
+        physicalType: VARCHAR
+      - name: customer_email
+        logicalType: string
+        physicalType: VARCHAR
+        format: email
+        description: Contact email of the customer.
+      - name: country
+        logicalType: string
+        physicalType: VARCHAR
+      - name: total_amount
+        logicalType: integer
+        physicalType: BIGINT
+        description: Total order amount (whole units in v1).
+      - name: status
+        logicalType: string
+        physicalType: VARCHAR
+      - name: order_date
+        logicalType: date
+        physicalType: DATE
+servers:
+  - server: local
+    type: local
+    path: data/orders.parquet
+    format: parquet

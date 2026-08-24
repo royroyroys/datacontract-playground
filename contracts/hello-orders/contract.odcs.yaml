@@ -1,0 +1,69 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: hello-orders
+name: Hello Orders
+version: 1.0.0
+status: active
+description:
+  purpose: Minimal example contract over a local orders parquet file.
+  usage: Learn the basic structure of an ODCS v3.1 data contract.
+  limitations: Local fixture data only; no credentials required.
+tags:
+  - orders
+  - example
+schema:
+  - name: orders
+    physicalName: orders
+    physicalType: parquet
+    description: One row per customer order.
+    quality:
+      - type: library
+        metric: rowCount
+        mustBeBetween: [1, 100000]
+        unit: rows
+        name: Orders table is populated
+    properties:
+      - name: order_id
+        logicalType: string
+        physicalType: VARCHAR
+        required: true
+        unique: true
+        description: Unique order identifier.
+        examples:
+          - ORD-0001
+        quality:
+          - type: library
+            metric: duplicateValues
+            mustBe: 0
+            unit: rows
+            name: No duplicate order ids
+      - name: customer_name
+        logicalType: string
+        physicalType: VARCHAR
+        description: Full name of the customer.
+      - name: email
+        logicalType: string
+        physicalType: VARCHAR
+        format: email
+        description: Contact email of the customer.
+      - name: country
+        logicalType: string
+        physicalType: VARCHAR
+        description: ISO-style country code of the customer.
+      - name: total_amount
+        logicalType: number
+        physicalType: DOUBLE
+        description: Total order amount.
+      - name: status
+        logicalType: string
+        physicalType: VARCHAR
+        description: Order lifecycle status.
+      - name: order_date
+        logicalType: date
+        physicalType: DATE
+        description: Date the order was placed.
+servers:
+  - server: local
+    type: local
+    path: data/orders.parquet
+    format: parquet

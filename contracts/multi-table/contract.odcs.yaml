@@ -1,0 +1,99 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: multi-table
+name: Multi-Table Contract
+version: 1.0.0
+status: active
+description:
+  purpose: A contract with two schema objects (orders and line_items) served
+    from one local server backed by two parquet files.
+  usage: Try the mermaid / html / sql exports to see both tables.
+  limitations: Local fixture data only.
+tags:
+  - multi-table
+  - export
+schema:
+  - name: orders
+    physicalName: orders
+    physicalType: parquet
+    description: One row per customer order.
+    quality:
+      - type: library
+        metric: rowCount
+        mustBeGreaterThan: 0
+        unit: rows
+        name: Orders table is populated
+    properties:
+      - name: order_id
+        logicalType: string
+        physicalType: VARCHAR
+        required: true
+        unique: true
+        quality:
+          - type: library
+            metric: duplicateValues
+            mustBe: 0
+            unit: rows
+            name: No duplicate order ids
+      - name: customer_name
+        logicalType: string
+        physicalType: VARCHAR
+      - name: email
+        logicalType: string
+        physicalType: VARCHAR
+        format: email
+      - name: country
+        logicalType: string
+        physicalType: VARCHAR
+      - name: total_amount
+        logicalType: number
+        physicalType: DOUBLE
+      - name: status
+        logicalType: string
+        physicalType: VARCHAR
+      - name: order_date
+        logicalType: date
+        physicalType: DATE
+  - name: line_items
+    physicalName: line_items
+    physicalType: parquet
+    description: One row per order line item.
+    quality:
+      - type: library
+        metric: rowCount
+        mustBeGreaterThan: 0
+        unit: rows
+        name: Line items table is populated
+    properties:
+      - name: line_item_id
+        logicalType: string
+        physicalType: VARCHAR
+        required: true
+        unique: true
+        quality:
+          - type: library
+            metric: duplicateValues
+            mustBe: 0
+            unit: rows
+            name: No duplicate line item ids
+      - name: order_id
+        logicalType: string
+        physicalType: VARCHAR
+        required: true
+        description: References orders.order_id.
+      - name: product_id
+        logicalType: string
+        physicalType: VARCHAR
+      - name: quantity
+        logicalType: integer
+        physicalType: BIGINT
+      - name: unit_price
+        logicalType: number
+        physicalType: DOUBLE
+servers:
+  - server: local
+    type: local
+    # {model} is substituted with each schema object name, so orders ->
+    # data/orders.parquet and line_items -> data/line_items.parquet
+    path: data/{model}.parquet
+    format: parquet

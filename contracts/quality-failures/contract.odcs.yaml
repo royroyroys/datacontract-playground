@@ -1,0 +1,75 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: quality-failures
+name: Quality Failures
+version: 1.0.0
+status: active
+description:
+  purpose: Same orders schema as hello-orders, but the fixture violates the
+    nullValues(email) and validValues(country) rules on purpose.
+  usage: See what failed checks, diagnostics and failed samples look like.
+  limitations: Local fixture data only.
+tags:
+  - quality
+  - failures
+schema:
+  - name: orders
+    physicalName: orders
+    physicalType: parquet
+    description: One row per customer order (with intentional quality issues).
+    quality:
+      - type: library
+        metric: rowCount
+        mustBeBetween: [1, 100000]
+        unit: rows
+        name: Orders table is populated
+    properties:
+      - name: order_id
+        logicalType: string
+        physicalType: VARCHAR
+        required: true
+        unique: true
+        quality:
+          - type: library
+            metric: duplicateValues
+            mustBe: 0
+            unit: rows
+            name: No duplicate order ids
+      - name: customer_name
+        logicalType: string
+        physicalType: VARCHAR
+      - name: email
+        logicalType: string
+        physicalType: VARCHAR
+        format: email
+        quality:
+          - type: library
+            metric: nullValues
+            mustBe: 0
+            unit: rows
+            name: Email must never be null
+      - name: country
+        logicalType: string
+        physicalType: VARCHAR
+        quality:
+          - type: library
+            metric: invalidValues
+            mustBe: 0
+            unit: rows
+            arguments:
+              validValues: [US, DE, FR, GB, NL, SE, JP, BR]
+            name: Country must be a known code
+      - name: total_amount
+        logicalType: number
+        physicalType: DOUBLE
+      - name: status
+        logicalType: string
+        physicalType: VARCHAR
+      - name: order_date
+        logicalType: date
+        physicalType: DATE
+servers:
+  - server: local
+    type: local
+    path: data/orders.parquet
+    format: parquet

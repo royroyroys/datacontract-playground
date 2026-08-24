@@ -1,0 +1,9 @@
+title: SQL Custom Checks
+summary: >-
+  type: sql quality rules with ${object} / ${property} placeholders, e.g.
+  "no negative total_amount". Runs against a CSV fixture.
+tags: [quality, sql, csv]
+difficulty: intermediate
+expected: passed
+data_format: csv
+order: 3

@@ -1,0 +1,9 @@
+title: Hello, Orders
+summary: >-
+  Minimal ODCS v3.1 contract: a schema with typed properties plus two library
+  quality rules (rowCount on the table, duplicateCount on order_id).
+tags: [basics, library-rules]
+difficulty: beginner
+expected: passed
+data_format: parquet
+order: 1

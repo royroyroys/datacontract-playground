@@ -1,0 +1,1 @@
+"""datacontract-playground core package."""

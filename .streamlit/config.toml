@@ -1,0 +1,4 @@
+[server]
+# Serve static/catalog/ (sanitised catalog pages) at /app/static/ so the
+# catalog iframe can navigate between pages without app reloads.
+enableStaticServing = true

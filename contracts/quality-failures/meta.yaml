@@ -1,0 +1,10 @@
+title: Quality Failures
+summary: >-
+  Same orders data, but with ~10% null emails and 5 invalid countries so the
+  nullValues and validValues library rules fail. Shows failed checks,
+  diagnostics and failed samples in the Test page.
+tags: [quality, failures, failed-samples]
+difficulty: beginner
+expected: failed
+data_format: parquet
+order: 2

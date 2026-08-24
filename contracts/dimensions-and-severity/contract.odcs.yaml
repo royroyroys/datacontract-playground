@@ -1,0 +1,90 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: dimensions-and-severity
+name: Dimensions and Severity
+version: 1.0.0
+status: active
+description:
+  purpose: Quality rules annotated with data-quality dimensions and severity.
+    The failing completeness rule is severity warning, so the overall run is
+    downgraded to warning instead of failed.
+  usage: Learn how dimensions, severity and tags organise quality rules.
+  limitations: Local fixture data only.
+tags:
+  - quality
+  - dimensions
+schema:
+  - name: products
+    physicalName: products
+    physicalType: parquet
+    description: One row per product.
+    quality:
+      - type: library
+        metric: rowCount
+        mustBeGreaterThan: 0
+        unit: rows
+        dimension: completeness
+        tags: [smoke, catalogue]
+        name: Products table is populated
+    properties:
+      - name: product_id
+        logicalType: string
+        physicalType: VARCHAR
+        required: true
+        unique: true
+        quality:
+          - type: library
+            metric: duplicateValues
+            mustBe: 0
+            unit: rows
+            dimension: uniqueness
+            tags: [smoke]
+            name: No duplicate product ids
+      - name: sku
+        logicalType: string
+        physicalType: VARCHAR
+      - name: name
+        logicalType: string
+        physicalType: VARCHAR
+      - name: description
+        logicalType: string
+        physicalType: VARCHAR
+        quality:
+          - type: library
+            metric: nullValues
+            mustBe: 0
+            unit: rows
+            dimension: completeness
+            severity: warning
+            tags: [content]
+            name: Descriptions should be present
+            description: Three products have no description; as a warning this
+              does not fail the run.
+      - name: price
+        logicalType: number
+        physicalType: DOUBLE
+        quality:
+          - type: sql
+            query: SELECT COUNT(*) FROM ${object} WHERE ${property} <= 0
+            mustBe: 0
+            dimension: accuracy
+            tags: [pricing]
+            name: Prices are positive
+      - name: category
+        logicalType: string
+        physicalType: VARCHAR
+        quality:
+          - type: library
+            metric: invalidValues
+            mustBe: 0
+            unit: rows
+            arguments:
+              validValues: [books, electronics, toys, grocery]
+            dimension: conformity
+            tags: [catalogue]
+            name: Category is a known value
+servers:
+  - server: local
+    type: local
+    path: data/products.parquet
+    format: parquet
